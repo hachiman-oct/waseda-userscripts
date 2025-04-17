@@ -23,7 +23,7 @@ This repository provides userscripts for enhancing Waseda University's web servi
 
 ---
 
-### 2. [syllabus_mobile.js](./syllabus/syllabus_mobile.js)
+### 2. [syllabus_mobile.js](./syllabus/syllabus-mobile.js)
 #### シラバスページのモバイル最適化  
 **Responsive Mobile View for Waseda Syllabus**
 
