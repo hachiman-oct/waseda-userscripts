@@ -76,7 +76,7 @@
     const dlBtnText = "Download all uncompleted files";
     const dlBtnCompleteText = "All files downloaded!";
 
-    const secs = document.querySelectorAll(".row .course-section");
+    const secs = document.querySelectorAll(".course-content .course-section");
     secs.forEach(sec => {
         displayBtn(sec);
     })
@@ -130,8 +130,11 @@
         const text = skipDl ? dlBtnCompleteText : dlBtnText;
         if (text) dlBtn.textContent = text;
 
-        const toggle = section.querySelector(".sectionbody")
-        toggle.insertAdjacentElement("beforebegin", btnContainer);
+        const target = section.querySelector(".sectionbody") || section.querySelector(".content");
+        if (target) {
+            target.insertAdjacentElement("beforebegin", btnContainer);
+        };
+        
         btnContainer.appendChild(dlBtn);
 
         const style = document.createElement('style');
