@@ -5,7 +5,7 @@
 // @author       hachiman-oct
 // @description  Adds a one-click download button for resources on Waseda University's Moodle.
 // @description:ja  早稲田大学のMoodleで、講義資料（Resource）を一括ダウンロードできるボタンを追加します。
-// @version      1.0.1
+// @version      1.0.2
 // @match        https://wsdmoodle.waseda.jp/course/*
 // @license      MIT
 // @icon         https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn-icon.svg
