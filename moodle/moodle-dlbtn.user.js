@@ -148,7 +148,7 @@
             for (const link of links) {
                 window.location.href = link.href;
                 clickCompleteBtn(link);
-                await delay(500);
+                await delay(3000);
             }
 
             const newBtn = dlBtn.cloneNode(true);
