@@ -7,7 +7,6 @@
 // @description:ja  早稲田大学のMoodleで、講義資料（Resource）を一括ダウンロードできるボタンを追加します。
 // @version      1.0
 // @match        https://wsdmoodle.waseda.jp/course/*
-// @icon         http://www.google.com/s2/favicons?domain=https://moodle.org/
 // @license      MIT
 // @icon         https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn-icon.svg
 // @updateURL    https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js
