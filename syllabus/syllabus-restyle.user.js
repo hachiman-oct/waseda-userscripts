@@ -2,7 +2,7 @@
 // @name         Waseda Syllabus Restyle
 // @name:ja      早稲田シラバス改善スクリプト
 // @namespace    https://github.com/hachiman-oct/
-// @version      1.0.0
+// @version      1.0.1
 // @author       hachiman-oct
 // @description  A user script to optimize the layout and display of Waseda syllabus.
 // @description:ja  スマホ対応・教室リンクなど、早稲田シラバスを実用的に改善します。
@@ -672,11 +672,12 @@
      * detailページのときにyearボタンとlangボタンを挿入
      */
     function addSyllabusBtns() {
-        const query = location.search;
-        const class_key   = query.slice(6,  16);
-        const class_code  = query.slice(16, 18);
-        const year        = query.slice(18, 22);
-        const school_code = query.slice(32, 34);
+        const param = new URLSearchParams(location.search);
+        const pKey = param.get("pKey");
+        const class_key   = pKey.slice(0,  10);
+        const class_code  = pKey.slice(10, 12);
+        const year        = pKey.slice(12, 16);
+        const school_code = pKey.slice(26, 28);
     
         const yearNext = +year + 1;
         const yearPrev = +year - 1;
