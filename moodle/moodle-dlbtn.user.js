@@ -9,8 +9,8 @@
 // @match        https://wsdmoodle.waseda.jp/course/*
 // @icon         http://www.google.com/s2/favicons?domain=https://moodle.org/
 // @license      MIT
-// @updateURL    https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/moodle/moodle-dlbtn.user.js
-// @downloadURL  https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/moodle/moodle-dlbtn.user.js
+// @updateURL    https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js
+// @downloadURL  https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js
 // @grant        none
 // @run-at       document-end
 //

@@ -8,8 +8,8 @@
 // @description:ja  スマホ対応・教室リンクなど、早稲田シラバスを実用的に改善します。
 // @match        https://www.wsl.waseda.jp/syllabus/*
 // @license      MIT
-// @updateURL    https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/syllabus/syllabus-restyle.user.js
-// @downloadURL  https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/syllabus/syllabus-restyle.user.js
+// @updateURL    https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/syllabus/syllabus-restyle.user.js
+// @downloadURL  https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/syllabus/syllabus-restyle.user.js
 // @grant        none
 // @run-at       document-end
 // ==/UserScript==
