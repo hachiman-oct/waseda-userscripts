@@ -20,7 +20,7 @@ This repository provides userscripts for enhancing Waseda University's web servi
   Marks resources as completed after download
 
 **インストールURL / Install URL:**
-
+[raw.githubusercontent.com](https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js)
 ---
 
 ### 2. [syllabus_mobile.js](./syllabus/syllabus-mobile.js)
@@ -34,7 +34,7 @@ This repository provides userscripts for enhancing Waseda University's web servi
   Hides unnecessary elements for clean UI
 
 **インストールURL / Install URL:**
-
+[raw.githubusercontent.com](https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/syllabus/syllabus-restyle.user.js)
 ---
 
 ## 🚀 導入方法 / How to Use
