@@ -7,23 +7,20 @@
 // @updateURL    https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-smoother.user.js
 // @downloadURL  https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-smoother.user.js
 // @license      MIT
-// @grant        GM_getValue
-// @grant        GM_setValue
-// @grant        GM_getResourceURL
 // @resource     externalCSS https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/style.css
 // @grant        GM_getResourceText
 // @resource     moodleLogo https://moodle.org/theme/moodleorg/pix/moodle_logo_TM.svg
 // @grant        GM_getResourceURL
+// @grant        GM_setValue
+// @grant        GM_getValue
 // ==/UserScript==
 
 (async function () {
     'use strict';
 
-    // Utility functions
     const qs = sel => document.querySelector(sel);
-    const qsa = sel => document.querySelectorAll(sel);
+    const qsa = sel => document.querySelectorAll(sel);    
 
-    // Settings definition
     const SETTINGS = {
         autoClickLogin:   { label: "自動でログインボタンを押す", default: false },
         setHomeDashboard: { label: "ダッシュボードをホームにする", default: false },
@@ -32,45 +29,145 @@
         hideEmptySections:{ label: "アクティビティがないセクションを非表示にする", default: false }
     };
 
-    const currentValues = await loadSettings(SETTINGS);
-    const tempValues = { ...currentValues };
-    importCss();
-    addSettingsBtn();
-
-    const Features = {
+    const FEATURE_FUNCTIONS = {
         autoClickLogin,
         setHomeDashboard,
         changeHeader,
         hideUnusedLink,
         hideEmptySections
     };
-    
-    const FEATURE_FUNCTIONS = {};
-    for (const key of Object.keys(SETTINGS)) {
-        if (typeof Features[key] === "function") {
-            FEATURE_FUNCTIONS[key] = Features[key];
+
+    // 初期設定の読み込み（Promise.allで並列取得）
+    const currentValues = {};
+    await Promise.all(Object.keys(SETTINGS).map(async key => {
+        const value = await GM_getValue(key);
+        currentValues[key] = value !== undefined ? value : SETTINGS[key].default;
+    }));
+
+    // 一時的な状態（適用前のチェックボックス値）
+    const tempValues = { ...currentValues };
+
+    const css = GM_getResourceText("externalCSS");
+    const style = document.createElement("style");
+    style.textContent = css;
+    console.log(css); // ここで内容が出力されるか確認
+    document.head.appendChild(style);
+
+    // 🔘 トグルボタン
+    const toggleButton = document.createElement("button");
+    toggleButton.textContent = "⚙️Settings";
+    toggleButton.className = "settings-toggle-btn";
+    document.body.appendChild(toggleButton);
+
+    // ⚙️ 設定パネル
+    const panel = document.createElement("div");
+    panel.className = "settings-panel";
+
+    const title = document.createElement("div");
+    title.textContent = "⚙️ Userscript settings";
+    title.style.fontWeight = "bold";
+    title.style.marginBottom = "8px";
+    panel.appendChild(title);
+
+    // チェックボックスと一時状態をリンク
+    const checkboxMap = {};
+    for (const key in SETTINGS) {
+        const label = document.createElement("label");
+        label.style.display = "block";
+        label.style.marginBottom = "6px";
+
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = tempValues[key];
+        checkbox.addEventListener("change", () => {
+            tempValues[key] = checkbox.checked;
+        });
+
+        checkboxMap[key] = checkbox;
+
+        label.appendChild(checkbox);
+        label.append(" " + SETTINGS[key].label);
+        panel.appendChild(label);
+    }
+
+    // ✅ 適用＆キャンセルボタン
+    const buttonRow = document.createElement("div");
+    buttonRow.style.textAlign = "right";
+    buttonRow.style.marginTop = "10px";
+
+    const applyBtn = document.createElement("button");
+    applyBtn.textContent = "Apply";
+    applyBtn.style.marginRight = "6px";
+    applyBtn.addEventListener("click", async () => {
+        for (const key in tempValues) {
+            await GM_setValue(key, tempValues[key]);
+        }
+        location.reload();
+    });
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.textContent = "Cancel";
+    cancelBtn.addEventListener("click", () => {
+        // 値を元に戻す
+        for (const key in currentValues) {
+            tempValues[key] = currentValues[key];
+            checkboxMap[key].checked = currentValues[key];
+        }
+        panel.style.display = "none";
+    });
+
+    buttonRow.appendChild(applyBtn);
+    buttonRow.appendChild(cancelBtn);
+    panel.appendChild(buttonRow);
+
+    document.body.appendChild(panel);
+
+    // 開閉の切り替え
+    toggleButton.addEventListener("click", (e) => {
+        e.stopPropagation();
+        panel.style.display = panel.style.display === "none" ? "block" : "none";
+    });
+
+    // 外部クリックでパネル閉じ
+    document.addEventListener("click", (event) => {
+        if (
+            panel.style.display === "block" &&
+            !panel.contains(event.target) &&
+            !toggleButton.contains(event.target)
+        ) {
+            panel.style.display = "none";
+        }
+    });
+
+    for (const [key, isEnabled] of Object.entries(currentValues)) {
+        if (isEnabled && typeof FEATURE_FUNCTIONS[key] === "function") {
+            FEATURE_FUNCTIONS[key]();
         }
     }
 
-    // === Feature implementations ===
     function autoClickLogin() {
-        if (location.href.includes("login/index.php")) {
-            qs(".login-identityprovider-btn")?.click();
+        const isLoginPage = window.location.href.includes("https://wsdmoodle.waseda.jp/login/index.php");
+
+        if (isLoginPage) {
+            qs(".login-identityprovider-btn").click();
         }
     }
 
     function setHomeDashboard() {
-        if (location.href === "https://wsdmoodle.waseda.jp/") {
-            location.href = "https://wsdmoodle.waseda.jp/my/";
+        const isHomePage = window.location.href === "https://wsdmoodle.waseda.jp/";
+        if (isHomePage) {
+            window.location.href = "https://wsdmoodle.waseda.jp/my/";
         }
     }
 
     function changeHeader() {
         const moodleLogo = GM_getResourceURL("moodleLogo");
-        const primaryNavigation = qs(".primary-navigation");
-        const brandLogoImg = qs(".navbar-brand img");
-
-        [primaryNavigation, brandLogoImg].forEach(el => el && (el.style.display = "none"));
+        const primaryNavigation = qs(".primary-navigation")
+        const brandLogo = qs(".navbar-brand");
+        const brandLogoImg = brandLogo.querySelector("img");    
+        [primaryNavigation, brandLogoImg].forEach(el => {
+            el.style.display = "none";
+        })
 
         const dashboardLink = document.createElement("a");
         dashboardLink.href = "https://wsdmoodle.waseda.jp/my/";
@@ -78,11 +175,15 @@
         const logoSvg = document.createElement("img");
         logoSvg.src = moodleLogo;
         logoSvg.id = "moodle-logo";
-        logoSvg.style.width = "100px";
-        logoSvg.style.height = "25px";
 
+        qs(".container-fluid").insertBefore(dashboardLink, primaryNavigation);
         dashboardLink.appendChild(logoSvg);
-        qs(".container-fluid")?.insertBefore(dashboardLink, primaryNavigation);
+
+        const logoEl = qs("#moodle-logo");
+        logoEl.removeAttribute("width");
+        logoEl.removeAttribute("height");
+        logoEl.style.width = "100px";
+        logoEl.style.height = "25px";
     }
 
     function hideUnusedLink() {
@@ -90,140 +191,22 @@
         if (pageNaviBar) {
             [1, 2, 3, 4].forEach(num => {
                 const li = pageNaviBar.querySelector(`li:nth-child(${num})`);
-                if (li) li.style.display = "none";
-            });
+                if (li) {
+                    li.style.display = "none";
+                }
+            })
         }
     }
 
     function hideEmptySections() {
-        qsa(".sectionbody ul").forEach(sec => {
-            const listItems = sec.querySelectorAll("li");
+        const sectionbodies = qsa(".sectionbody ul");
+        sectionbodies.forEach(secBody => {
+            const listItems = secBody.querySelectorAll("li");
             if (listItems.length === 0) {
-                const section = sec.closest(".course-section");
-                if (section) section.style.display = "none";
+                console.log(false);
+                const section = secBody.closest(".course-section")
+                section.style.display = "none";
             }
         });
-    }
-
-    // Load saved or default settings
-    async function loadSettings(settingsDef) {
-        const values = {};
-        await Promise.all(
-            Object.keys(settingsDef).map(async key => {
-                const value = await GM_getValue(key);
-                values[key] = value !== undefined ? value : settingsDef[key].default;
-            })
-        );
-        return values;
-    }
-
-    // Save settings to storage
-    async function saveSettings(values) {
-        for (const key in values) {
-            await GM_setValue(key, values[key]);
-        }
-    }
-
-    // Reset temporary values to current values
-    function resetTempToCurrent(current, temp, checkboxes) {
-        for (const key in current) {
-            temp[key] = current[key];
-            checkboxes[key].checked = current[key];
-        }
-    }
-
-    function importCss() {
-        const css = GM_getResourceText("externalCSS");
-        const style = document.createElement("style");
-        style.textContent = css;
-        document.head.appendChild(style);
-    }
-
-    function addSettingsBtn() {
-        // Settings UI toggle button
-        const toggleButton = document.createElement("button");
-        toggleButton.className = "settings-toggle-btn";
-        toggleButton.textContent = "⚙️設定";
-        document.body.appendChild(toggleButton);
-
-        // Settings panel
-        const panel = document.createElement("div");
-        panel.className = "settings-panel";
-
-        const title = document.createElement("div");
-        title.textContent = "⚙️ ユーザースクリプト設定";
-        title.style.fontWeight = "bold";
-        title.style.marginBottom = "8px";
-        panel.appendChild(title);
-
-        const checkboxMap = {};
-        Object.entries(SETTINGS).forEach(([key, { label }]) => {
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.checked = tempValues[key];
-            checkbox.addEventListener("change", () => {
-                tempValues[key] = checkbox.checked;
-            });
-
-            const labelEl = document.createElement("label");
-            labelEl.style.display = "block";
-            labelEl.style.marginBottom = "6px";
-            labelEl.appendChild(checkbox);
-            labelEl.append(" " + label);
-            panel.appendChild(labelEl);
-
-            checkboxMap[key] = checkbox;
-        });
-
-        const buttonRow = document.createElement("div");
-        buttonRow.style.textAlign = "right";
-        buttonRow.style.marginTop = "10px";
-
-        const applyBtn = document.createElement("button");
-        applyBtn.textContent = "Apply";
-        applyBtn.style.marginRight = "6px";
-        applyBtn.addEventListener("click", async () => {
-            await saveSettings(tempValues);
-            location.reload();
-        });
-
-        const cancelBtn = document.createElement("button");
-        cancelBtn.textContent = "Cancel";
-        cancelBtn.addEventListener("click", () => {
-            resetTempToCurrent(currentValues, tempValues, checkboxMap);
-            panel.style.display = "none";
-        });
-
-        buttonRow.appendChild(applyBtn);
-        buttonRow.appendChild(cancelBtn);
-        panel.appendChild(buttonRow);
-        document.body.appendChild(panel);
-
-        toggleButton.addEventListener("click", (e) => {
-            e.stopPropagation();
-            panel.style.display = panel.style.display === "none" ? "block" : "none";
-        });
-
-        document.addEventListener("click", (event) => {
-            if (panel.style.display === "block" &&
-                !panel.contains(event.target) &&
-                !toggleButton.contains(event.target)) {
-                panel.style.display = "none";
-            }
-        });
-    }
-
-    // === Feature execution mapping ===
-    const FEATURES = {};
-    for (const key of Object.keys(SETTINGS)) {
-        if (typeof window[key] === "function") {
-            FEATURES[key] = window[key];
-        }
-    }
-
-    for (const [key, enabled] of Object.entries(currentValues)) {
-        if (enabled && typeof FEATURES[key] === "function") {
-            FEATURES[key]();
-        }
     }
 })();
