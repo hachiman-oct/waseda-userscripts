@@ -34,6 +34,8 @@
 
     const currentValues = await loadSettings(SETTINGS);
     const tempValues = { ...currentValues };
+    importCss();
+    addSettingsBtn();
 
     // === Feature implementations ===
     function autoClickLogin() {
