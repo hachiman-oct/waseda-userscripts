@@ -37,6 +37,21 @@
     importCss();
     addSettingsBtn();
 
+    const Features = {
+        autoClickLogin,
+        setHomeDashboard,
+        changeHeader,
+        hideUnusedLink,
+        hideEmptySections
+    };
+    
+    const FEATURE_FUNCTIONS = {};
+    for (const key of Object.keys(SETTINGS)) {
+        if (typeof Features[key] === "function") {
+            FEATURE_FUNCTIONS[key] = Features[key];
+        }
+    }
+
     // === Feature implementations ===
     function autoClickLogin() {
         if (location.href.includes("login/index.php")) {
