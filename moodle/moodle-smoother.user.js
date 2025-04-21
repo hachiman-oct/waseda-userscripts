@@ -127,7 +127,7 @@
     function addSettingsBtn() {
         // Settings UI toggle button
         const toggleButton = document.createElement("button");
-        toggleButton.className = "setting-toggle-btn";
+        toggleButton.className = "settings-toggle-btn";
         toggleButton.textContent = "⚙️設定";
         document.body.appendChild(toggleButton);
 
