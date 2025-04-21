@@ -13,6 +13,8 @@
 // @grant        GM_getResourceURL
 // @grant        GM_setValue
 // @grant        GM_getValue
+// @resource     moodleDlBtn https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js
+
 // ==/UserScript==
 
 (async function () {
@@ -26,7 +28,8 @@
         setHomeDashboard: { label: "ダッシュボードをホームにする", default: false },
         changeHeader:     { label: "ヘッダーをダッシュボードへのリンクのみにする", default: false },
         hideUnusedLink:   { label: "不必要なリンクを非表示にする", default: false },
-        hideEmptySections:{ label: "アクティビティがないセクションを非表示にする", default: false }
+        hideEmptySections:{ label: "アクティビティがないセクションを非表示", default: false },
+        moodleDlBtn:      { label: "ファイルを一括ダウンロードするボタンを追加", default: false }
     };
 
     const FEATURE_FUNCTIONS = {
@@ -34,7 +37,8 @@
         setHomeDashboard,
         changeHeader,
         hideUnusedLink,
-        hideEmptySections
+        hideEmptySections,
+        moodleDlBtn
     };
 
     // 初期設定の読み込み（Promise.allで並列取得）
@@ -208,5 +212,10 @@
                 section.style.display = "none";
             }
         });
+    }
+
+    function moodleDlBtn() {
+        const scriptContent = GM_getResourceText("moodleDlBtn");
+        eval(scriptContent);
     }
 })();
