@@ -24,21 +24,23 @@
     const qsa = sel => document.querySelectorAll(sel);    
 
     const SETTINGS = {
-        autoClickLogin:   { label: "自動でログインボタンを押す", default: false },
-        setHomeDashboard: { label: "ダッシュボードをホームにする", default: false },
-        changeHeader:     { label: "ヘッダーをダッシュボードへのリンクのみにする", default: false },
-        hideUnusedLink:   { label: "不必要なリンクを非表示にする", default: false },
-        hideEmptySections:{ label: "アクティビティがないセクションを非表示", default: false },
-        moodleDlBtn:      { label: "ファイルを一括ダウンロードするボタンを追加", default: false }
+        autoClickLogin:   { label: "Automatically click the login button", default: false },
+        setHomeDashboard: { label: "Set the dashboard as the home page", default: false },
+        changeHeader:     { label: "Change the header to only link to the dashboard", default: false },
+        hideUnusedLink:   { label: "Hide unnecessary links", default: false },
+        hideEmptySections:{ label: "Hide empty sections", default: false },
+        moodleDlBtn:      { label: "Add a button to download all files", default: false },
+        hideEmptyCourseIndex: { label: "Hide empty course index", default: false }
     };
-
+    
     const FEATURE_FUNCTIONS = {
         autoClickLogin,
         setHomeDashboard,
         changeHeader,
         hideUnusedLink,
         hideEmptySections,
-        moodleDlBtn
+        moodleDlBtn,
+        hideEmptyCourseIndex
     };
 
     // 初期設定の読み込み（Promise.allで並列取得）
@@ -203,19 +205,30 @@
     }
 
     function hideEmptySections() {
-        const sectionbodies = qsa(".sectionbody ul");
-        sectionbodies.forEach(secBody => {
-            const listItems = secBody.querySelectorAll("li");
-            if (listItems.length === 0) {
-                console.log(false);
-                const section = secBody.closest(".course-section")
-                section.style.display = "none";
-            }
-        });
+        hideLists(".sectionbody ul", ".course-section");
     }
 
     function moodleDlBtn() {
         const scriptContent = GM_getResourceText("moodleDlBtn");
         eval(scriptContent);
+    }
+
+    function hideLists(listSel, sectionSel) {
+        const lists = qsa(listSel);
+        console.log(sectionSel);
+        console.log(lists);
+        lists.forEach(list => {
+            const listItems = list.querySelectorAll("li");
+            if (listItems.length === 0) {
+                const section = list.closest(sectionSel);
+                if (section) section.style.display = "none";
+            }
+        })
+    }
+
+    function hideEmptyCourseIndex() {
+        setTimeout(() => {
+            hideLists(".courseindex-item-content ul", ".courseindex-section");
+        }, 1000); 
     }
 })();
