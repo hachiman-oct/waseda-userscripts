@@ -4,6 +4,7 @@
 // @version      1.0.0
 // @description  Refactored version with modular settings and function mapping
 // @match        https://wsdmoodle.waseda.jp/*
+// @icon         https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-smoother-icon.svg
 // @updateURL    https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-smoother.user.js
 // @downloadURL  https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-smoother.user.js
 // @license      MIT
