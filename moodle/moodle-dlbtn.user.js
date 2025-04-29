@@ -5,7 +5,7 @@
 // @author       hachiman-oct
 // @description  Adds a one-click download button for resources on Waseda University's Moodle.
 // @description:ja  早稲田大学のMoodleで、講義資料（Resource）を一括ダウンロードできるボタンを追加します。
-// @version      1.0.2
+// @version      1.0.3
 // @match        https://wsdmoodle.waseda.jp/course/*
 // @license      MIT
 // @icon         https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn-icon.svg
@@ -92,11 +92,7 @@
         let actsHasResource = [];
         const acts = section.querySelectorAll(".activity");
         acts.forEach(act => {
-            const hasResource = hasResourceLink(act);
-            if (!hasResource) return;
-
-            const hasToggle = hasToggleBtn(act);
-            if (hasToggle) return;
+            if (!hasResourceLink(act) || hasToggleBtn(act)) return;
 
             const isCompleted = isActivityCompleted(act);
             const link = act.querySelector("a");
@@ -163,26 +159,17 @@
     }
 
     /**
-     * 指定されたactivityがPDFファイルのアイコンを含むかどうかを判定する
+     * 指定されたactivityがResourceのリンクを含み，onclick属性がないかどうかを判定する
      * @param {Element} el - 判定対象のDOM要素
-     * @returns {boolean} - PDFアイコンが存在すればtrue、なければfalse
-     */
-    function hasPdfIcon(el) {
-        const img = el.querySelector("img");
-        if (!img) return false;
-
-        return img.src.includes("pdf");
-    }
-
-    /**
-     * 指定されたactivityがResourceのリンクを含むかどうかを判定する
-     * @param {Element} el - 判定対象のDOM要素
-     * @returns {boolean} - Resourceのリンクが存在すればtrue、なければfalse
+     * @returns {boolean} - Resourceのリンクが存在しonclick属性がなければtrue，それ以外はfalse
      */
     function hasResourceLink(el) {
         const modLink = el.querySelector("a");
         if (!modLink) return false;
-
+    
+        const onclickValue = modLink.getAttribute('onclick');
+        if (onclickValue) return false;
+    
         return modLink.href.includes("mod/resource");
     }
     
@@ -205,10 +192,10 @@
      * @returns {boolean} - Toggleであればtrue、Toggleでないならfalse
      */
     function hasToggleBtn(el) {
-        if (!el || !(el instanceof Element)) return false;
-  
-        const btnToggle = el.querySelector(".dropdown-toggle");
-        return btnToggle !== null;
+        const btn = el.querySelector("button");
+        if (!btn) return false;
+    
+        return btn.dataset.action == "toggle-manual-completion";
     }
 
 
