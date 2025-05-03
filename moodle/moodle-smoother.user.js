@@ -15,6 +15,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @resource     moodleDlBtn https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js
+// @require      https://gist.githubusercontent.com/hachiman-oct/b72b0bf0997c47c3d75cc041397f0660/raw/626f10686bc70aea0b86eb1cfecc5df7d9503559/video-monitor.js
 
 // ==/UserScript==
 
@@ -31,7 +32,8 @@
         hideUnusedLink:   { label: "Hide unnecessary links", default: false },
         hideEmptySections:{ label: "Hide empty sections", default: false },
         moodleDlBtn:      { label: "Add a button to download all files", default: false },
-        hideEmptyCourseIndex: { label: "Hide empty course index", default: false }
+        hideEmptyCourseIndex: { label: "Hide empty course index", default: false },
+        alertVideoStatus: { label: "Alert Video Status", default: false}
     };
     
     const FEATURE_FUNCTIONS = {
@@ -41,7 +43,8 @@
         hideUnusedLink,
         hideEmptySections,
         moodleDlBtn,
-        hideEmptyCourseIndex
+        hideEmptyCourseIndex,
+        alertVideoStatus
     };
 
     // 初期設定の読み込み（Promise.allで並列取得）
@@ -231,5 +234,19 @@
         setTimeout(() => {
             hideLists(".courseindex-item-content ul", ".courseindex-section");
         }, 1000); 
+    }
+
+    function alertVideoStatus() {
+        const isVideoPage = window.location.pathname === "/mod/millvi/view.php";
+        if (!isVideoPage) return;
+
+        const videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+            window.videoMonitor.monitorVideo(
+                video,
+                () => alert("🎉 動画視聴完了！"),
+                (reason) => alert(`⚠️ 動画停止: ${reason}`)
+            );
+        });
     }
 })();
