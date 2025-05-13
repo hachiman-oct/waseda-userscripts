@@ -166,7 +166,7 @@
     function setHomeDashboard() {
         const isHomePage = window.location.href === "https://wsdmoodle.waseda.jp/";
         if (isHomePage) {
-            window.location.href = "https://wsdmoodle.waseda.jp/my/";
+            window.location.href = "https://wsdmoodle.waseda.jp/my/courses.php";
         }
     }
 
@@ -180,7 +180,7 @@
         })
 
         const dashboardLink = document.createElement("a");
-        dashboardLink.href = "https://wsdmoodle.waseda.jp/my/";
+        dashboardLink.href = "https://wsdmoodle.waseda.jp/my/courses.php";
 
         const logoSvg = document.createElement("img");
         logoSvg.src = moodleLogo;
