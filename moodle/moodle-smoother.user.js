@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Moodle Smoother
 // @namespace    https://github.com/hachiman-oct/
-// @version      1.0.0
+// @version      1.1.0
 // @description  Refactored version with modular settings and function mapping
 // @match        https://wsdmoodle.waseda.jp/*
 // @icon         https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-smoother-icon.svg
@@ -14,10 +14,12 @@
 // @grant        GM_getResourceURL
 // @grant        GM_setValue
 // @grant        GM_getValue
-// @resource     moodleDlBtn https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js
-// @require      https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/scripts/video-monitor.js
-
 // ==/UserScript==
+
+import { changeHeader } from "./features/changeHeader.js";
+import { hideUnusedLink } from "./features/hideUnusedLink.js";
+import { monitorVideo } from "./features/videoMonitor.js";
+import { moodleDlBtn } from "./features/moodleDlBtn.js";
 
 (async function () {
     'use strict';
@@ -39,10 +41,10 @@
     const FEATURE_FUNCTIONS = {
         autoClickLogin,
         setHomeDashboard,
-        changeHeader,
-        hideUnusedLink,
+        changeHeader: () => changeHeader(qs, GM_getResourceURL),
+        hideUnusedLink: () => hideUnusedLink(qs),
         hideEmptySections,
-        moodleDlBtn,
+        moodleDlBtn, // ← ここを直接参照
         hideEmptyCourseIndex,
         alertVideoStatus
     };
@@ -170,51 +172,8 @@
         }
     }
 
-    function changeHeader() {
-        const moodleLogo = GM_getResourceURL("moodleLogo");
-        const primaryNavigation = qs(".primary-navigation")
-        const brandLogo = qs(".navbar-brand");
-        const brandLogoImg = brandLogo.querySelector("img");    
-        [primaryNavigation, brandLogoImg].forEach(el => {
-            el.style.display = "none";
-        })
-
-        const dashboardLink = document.createElement("a");
-        dashboardLink.href = "https://wsdmoodle.waseda.jp/my/courses.php";
-
-        const logoSvg = document.createElement("img");
-        logoSvg.src = moodleLogo;
-        logoSvg.id = "moodle-logo";
-
-        qs(".container-fluid").insertBefore(dashboardLink, primaryNavigation);
-        dashboardLink.appendChild(logoSvg);
-
-        const logoEl = qs("#moodle-logo");
-        logoEl.removeAttribute("width");
-        logoEl.removeAttribute("height");
-        logoEl.style.width = "100px";
-        logoEl.style.height = "25px";
-    }
-
-    function hideUnusedLink() {
-        const pageNaviBar = qs("#page-navbar");
-        if (pageNaviBar) {
-            [1, 2, 3, 4].forEach(num => {
-                const li = pageNaviBar.querySelector(`li:nth-child(${num})`);
-                if (li) {
-                    li.style.display = "none";
-                }
-            })
-        }
-    }
-
     function hideEmptySections() {
         hideLists(".sectionbody ul", ".course-section");
-    }
-
-    function moodleDlBtn() {
-        const scriptContent = GM_getResourceText("moodleDlBtn");
-        eval(scriptContent);
     }
 
     function hideLists(listSel, sectionSel) {
@@ -242,7 +201,7 @@
 
         const videos = document.querySelectorAll('video');
         videos.forEach(video => {
-            window.videoMonitor.monitorVideo(
+            monitorVideo(
                 video,
                 () => alert("🎉 動画視聴完了！"),
                 (reason) => alert(`⚠️ 動画停止: ${reason}`)
