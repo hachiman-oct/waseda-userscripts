@@ -15,7 +15,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @resource     moodleDlBtn https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js
-// @require      https://gist.githubusercontent.com/hachiman-oct/b72b0bf0997c47c3d75cc041397f0660/raw/626f10686bc70aea0b86eb1cfecc5df7d9503559/video-monitor.js
+// @require      https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/scripts/video-monitor.js
 
 // ==/UserScript==
 
