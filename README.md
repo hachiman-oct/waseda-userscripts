@@ -7,24 +7,14 @@ This repository provides userscripts for enhancing Waseda University's web servi
 
 ---
 
-## 📄 収録スクリプト / Available Scripts
-
-### 1. [moodle-dlbtn.user.js](./moodle/moodle-dlbtn.user.js)
-#### Moodleファイルダウンロードボタン追加
-**WSD Moodle DLBtn**
-
-- **対象ページ / Target**: `https://wsdmoodle.waseda.jp/course/view.php/*`
-- **主な機能 / Features**:
-  - 講義資料（Resource）の未完了分を一括ダウンロード  
-  *Download all uncompleted resource files at once*
-  - ダウンロード後に「完了」に自動チェック  
-  *Marks resources as completed after download*
-
-- **Install URL: [raw.githubusercontent.com](https://raw.githubusercontent.com/hachiman-oct/waseda-userscripts/main/moodle/moodle-dlbtn.user.js)**
+WSDMoodle Smootherはこちらのリポジトリに移行しました:
+- [WSDMoodle Extension](https://github.com/hachiman-oct/wsdmoodle-extension)
 
 ---
 
-### 2. [syllabus-restyle.user.js](./syllabus/syllabus-restyle.user.js)
+## 📄 収録スクリプト / Available Scripts
+
+### 1. [syllabus-restyle.user.js](./syllabus/syllabus-restyle.user.js)
 #### シラバスページのモバイル向けリスタイル  
 **Waseda Syllabus Restyle**
 
@@ -69,9 +59,3 @@ This repository provides userscripts for enhancing Waseda University's web servi
 ## 📝 ライセンス / License
 
 [MIT License](./LICENSE)
-
----
-
-## 👤 作者 / Author
-
-- GitHub: [hachiman-oct](https://github.com/hachiman-oct/)
